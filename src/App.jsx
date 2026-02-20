@@ -1,11 +1,16 @@
 import {useState} from "react";
 
 function App() {
+    const [tasks, setTasks] = useState([])
     const [openSection, setOpenSection] = useState({
         taskList: false,
         tasks: true,
         completedTasks: true
     });
+
+    function addTask(task) {
+        setTasks([...tasks, {...task, completed: false, id: Date.now()}])
+    }
 
     function toggleSection(section) {
         setOpenSection((prev) => ({
@@ -14,7 +19,7 @@ function App() {
         }))
     }
 
-
+    
     return <div className="app">
 
         <div className="task-container">
@@ -22,7 +27,7 @@ function App() {
             <button onClick={() => toggleSection('taskList')}
                     className={`close-button ${openSection.taskList ? 'open' : ''}`}>+
             </button>
-            {openSection.taskList && <TaskForm/>}
+            {openSection.taskList && <TaskForm addTask={addTask}/>}
 
         </div>
 
@@ -50,16 +55,44 @@ function App() {
     </div>;
 }
 
-function TaskForm() {
+function TaskForm({addTask}) {
+    const [title, setTitle] = useState('');
+    const [priority, setPriority] = useState('Low');
+    const [deadLine, setDeadLine] = useState('');
+
+    function handleSubmit(event) {
+        event.preventDefault();
+        if (title.trim() && deadLine) {
+            addTask({title, priority, deadLine});
+            setTitle('');
+            setPriority('Low');
+            setDeadLine('')
+        }
+    }
+
     return (
-        <form action="" className="task-form">
-            <input type="text" placeholder="task title" required/>
-            <select>
+        <form action="" className="task-form" onSubmit={handleSubmit}>
+            <input
+                value={title}
+                type="text"
+                placeholder="task title"
+                required
+                onChange={(e) => setTitle(e.target.value)}
+            />
+            <select
+                value={priority}
+                onChange={(e) => setPriority(e.target.value)}
+            >
                 <option value="High">High</option>
                 <option value="Medium">Medium</option>
                 <option value="Low">Low</option>
             </select>
-            <input type="datetime-local" required/>
+            <input
+                value={deadLine}
+                type="datetime-local"
+                required
+                onChange={(e) => setDeadLine(e.target.value)}
+            />
             <button type="submit">Add task</button>
         </form>
     )
