@@ -8,10 +8,6 @@ function App() {
         completedTasks: true
     });
 
-    function addTask(task) {
-        setTasks([...tasks, {...task, completed: false, id: Date.now()}])
-    }
-
     function toggleSection(section) {
         setOpenSection((prev) => ({
             ...prev,
@@ -19,11 +15,12 @@ function App() {
         }))
     }
 
-    // console.log(tasks);
+    function addTask(task) {
+        setTasks([...tasks, {...task, completed: false, id: Date.now()}])
+    }
 
     const activeTasks = tasks.filter(task => !task.completed);
     const completedTasks = tasks.filter(task => task.completed);
-    console.log(completedTasks);
 
 
     return <div className="app">
